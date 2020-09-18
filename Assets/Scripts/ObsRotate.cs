@@ -18,8 +18,6 @@ public class ObsRotate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-
         if(Input.GetMouseButton(0))
         {
             float mouseX = Input.GetAxis("Mouse X");
@@ -29,4 +27,10 @@ public class ObsRotate : MonoBehaviour
             
         }
     }
+}
+
+[System.Serializable]
+public class PathCondition
+{
+
 }

@@ -164,7 +164,7 @@ public class PlayerControl : MonoBehaviour
         // 시퀀스는 동작들을 모아놓은 배열이라 생각하면 됨
         Sequence seq = DOTween.Sequence();        
 
-        // 경로에 따라 계속 루프
+        // 경로만큼 루프
         for(int i = finalPath.Count - 1; i > 0; i--)
         {
             // 계단인지 판단하여 이동속도 조정
