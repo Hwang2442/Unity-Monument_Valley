@@ -28,9 +28,3 @@ public class ObsRotate : MonoBehaviour
         }
     }
 }
-
-[System.Serializable]
-public class PathCondition
-{
-
-}
