@@ -20,11 +20,13 @@ public class RotObject : MonoBehaviour
     [Space]
     public float rotSpeed;
 
-    bool isRotate;    
+    bool isRotate;
+    public float targetAngle;
 
     void Start()
     {
         isRotate = false;
+        targetAngle = 0;
     }
 
     void Update()
@@ -56,18 +58,54 @@ public class RotObject : MonoBehaviour
 
             rot *= rotSpeed;
 
-            transform.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
-                ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)), 
-                ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
-
-            rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
-                ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
-                ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
+            setAngle(rot.x);
 
             // 마우스를 떼면 더 이상 움직이지 않음
             if (Input.GetMouseButtonUp(0))
             {
                 isRotate = false;
+
+                float currentAngle = getAngle();
+
+                Debug.Log(currentAngle);
+
+                // 자동으로 맞출 각도 찾기
+                for (int i = 270; i >= 0; i -= 90)
+                {
+                    if (currentAngle > i)
+                    {
+                        if (currentAngle > i + 45)
+                        {
+                            targetAngle = i + 90;                            
+                        }
+                        else
+                        {
+                            targetAngle = i;
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            float currentAngle = getAngle();
+
+            if(Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
+            {
+                if(targetAngle > currentAngle)
+                {
+                    setAngle(currentAngle + rotSpeed * Time.deltaTime);
+                }
+                else
+                {
+                    setAngle(currentAngle - rotSpeed * Time.deltaTime);
+                }
+            }
+            else if (Mathf.Abs(targetAngle - currentAngle) <= rotSpeed)
+            {
+                setAngle(targetAngle);
             }
         }
         
@@ -75,21 +113,35 @@ public class RotObject : MonoBehaviour
         {
             foreach (SinglePath singlePath in pathCube.path)
             {
-                float angle = 0;
-                switch (axisOfRotate)
-                {
-                    case AxisOfRotate.X: angle = transform.eulerAngles.x; break;
-                    case AxisOfRotate.Y: angle = transform.eulerAngles.y; break;
-                    case AxisOfRotate.Z: angle = transform.eulerAngles.z; break;
-                }
-
-                if (angle < 0) angle = 360 + angle;
-
-                
-
+                // 큐브의 이동경로 변수 설정
                 singlePath.block.possiblePaths[singlePath.index - 1].active = (transform.eulerAngles.Equals(pathCube.angle));
             }
         }
+    }
+
+    private void setAngle(float angle)
+    {
+        transform.Rotate(((axisOfRotate == AxisOfRotate.X) ? (angle) : (0)),
+                ((axisOfRotate == AxisOfRotate.Y) ? (angle) : (0)),
+                ((axisOfRotate == AxisOfRotate.Z) ? (angle) : (0)));
+
+        rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (angle) : (0)),
+            ((axisOfRotate == AxisOfRotate.Y) ? (angle) : (0)),
+            ((axisOfRotate == AxisOfRotate.Z) ? (angle) : (0)));
+    }
+
+    private float getAngle()
+    {
+        float answer = 0;
+
+        switch (axisOfRotate)
+        {
+            case AxisOfRotate.X: answer = transform.eulerAngles.x; break;
+            case AxisOfRotate.Y: answer = transform.eulerAngles.y; break;
+            case AxisOfRotate.Z: answer = transform.eulerAngles.z; break;
+        }
+
+        return answer;
     }
 }
 

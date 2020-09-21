@@ -26637,6 +26637,14 @@ PrefabInstance:
       propertyPath: axisOfRotate
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 7131669345700816925, guid: a427a114aa95855409226e0be9b6e722, type: 3}
+      propertyPath: pathCubes.Array.data[0].angle
+      value: 270
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131669345700816925, guid: a427a114aa95855409226e0be9b6e722, type: 3}
+      propertyPath: pathCubes.Array.data[1].angle
+      value: 270
+      objectReference: {fileID: 0}
     - target: {fileID: 8279709697120747845, guid: a427a114aa95855409226e0be9b6e722, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
