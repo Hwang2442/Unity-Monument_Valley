@@ -1,28 +1,32 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class RotObject : MonoBehaviour
 {
+    public enum AxisOfRotate
+    {
+        X, Y, Z
+    }
 
-    [Header("Rotate Option")]
+    [Header("Rotate Object")]
     public Transform rotateObj;
     public List<PathCondition> pathCubes = new List<PathCondition>();
 
     [Space]
+    public AxisOfRotate axisOfRotate;
+
+    [Space]
     public float rotSpeed;
 
-    bool isRotate;
+    bool isRotate;    
 
-    public float originAngle;
-
-    // Start is called before the first frame update
     void Start()
     {
         isRotate = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         // 왼쪽 버튼을 클릭하면
@@ -39,39 +43,51 @@ public class RotObject : MonoBehaviour
                 if(mouseHit.transform.gameObject.Equals(gameObject))
                 {
                     isRotate = true;
-
-                    //Debug.LogError("오오오");
-
-                    Vector2 mousePos = (Vector2)Input.mousePosition;
-                    Vector2 leverPos = (Vector2)transform.position;
-
-                    originAngle = Vector2.Angle(leverPos, mousePos);
                 }
             }
         }
 
+        // 마우스 클릭 중인 상태로 레버와 오브젝트 회전
         if (isRotate)
         {
-            //Vector2 mousePos = (Vector2)Input.mousePosition;
-            //Vector2 leverPos = (Vector2)transform.position;
+            Vector2 rot = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-            //float currentAngle = Vector2.Angle(leverPos, mousePos);
+            Debug.Log(rot);
 
-            //currentAngle -= originAngle;
+            rot *= rotSpeed;
 
-            //transform.Rotate(new Vector3(0, 0, currentAngle));
-            //rotateObj.Rotate(new Vector3(0, 0, currentAngle));
+            transform.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
+                ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)), 
+                ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
 
-            float x = Input.GetAxis("Mouse X") * rotSpeed;
-            float y = Input.GetAxis("Mouse Y") * rotSpeed;
+            rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
+                ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
+                ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
 
-            transform.Rotate(0, 0, x + y);
-
-            
-
+            // 마우스를 떼면 더 이상 움직이지 않음
             if (Input.GetMouseButtonUp(0))
             {
                 isRotate = false;
+            }
+        }
+        
+        foreach (PathCondition pathCube in pathCubes)
+        {
+            foreach (SinglePath singlePath in pathCube.path)
+            {
+                float angle = 0;
+                switch (axisOfRotate)
+                {
+                    case AxisOfRotate.X: angle = transform.eulerAngles.x; break;
+                    case AxisOfRotate.Y: angle = transform.eulerAngles.y; break;
+                    case AxisOfRotate.Z: angle = transform.eulerAngles.z; break;
+                }
+
+                if (angle < 0) angle = 360 + angle;
+
+                
+
+                singlePath.block.possiblePaths[singlePath.index - 1].active = (transform.eulerAngles.Equals(pathCube.angle));
             }
         }
     }
@@ -81,5 +97,12 @@ public class RotObject : MonoBehaviour
 public class PathCondition
 {
     public Vector3 angle;
-    public List<Transform> cubes = new List<Transform>();
-};
+    public List<SinglePath> path;
+}
+
+[System.Serializable]
+public class SinglePath
+{
+    public Walkable block;
+    public int index;
+}
