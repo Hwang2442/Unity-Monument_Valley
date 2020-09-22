@@ -84,8 +84,12 @@ public class RotObject : MonoBehaviour
                             targetAngle = i;
                         }
 
-                        transform.DORotate(new Vector3(0, 0, targetAngle - currentAngle), 0.6f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
-                        rotateObj.DORotate(new Vector3(0, 0, targetAngle - currentAngle), 0.6f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                        Vector3 setAngle = new Vector3((axisOfRotate == AxisOfRotate.X) ? (targetAngle - currentAngle) : 0,
+                            (axisOfRotate == AxisOfRotate.Y) ? (targetAngle - currentAngle) : 0,
+                            (axisOfRotate == AxisOfRotate.Z) ? (targetAngle - currentAngle) : 0);
+
+                        transform.DORotate(setAngle, 0.5f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                        rotateObj.DORotate(setAngle, 0.5f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
 
                         break;
                     }
@@ -96,16 +100,9 @@ public class RotObject : MonoBehaviour
         {
             //float currentAngle = getAngle();
 
-            //if(Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
+            //if (Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
             //{
-            //    if(targetAngle > currentAngle)
-            //    {
-            //        setAngle(currentAngle + rotSpeed * Time.deltaTime);
-            //    }
-            //    else
-            //    {
-            //        setAngle(currentAngle - rotSpeed * Time.deltaTime);
-            //    }
+            //    setAngle(currentAngle + rotSpeed * Time.deltaTime);
             //}
             //else if (Mathf.Abs(targetAngle - currentAngle) <= rotSpeed)
             //{

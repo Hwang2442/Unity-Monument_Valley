@@ -49,7 +49,7 @@ public class PlayerControl : MonoBehaviour
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit mouseHit;
 
-            // 레이캐스트 충돌 했나
+            // 레이 발사!!
             if(Physics.Raycast(mouseRay, out mouseHit))
             {
                 // 클릭한 곳이 오브젝트면
@@ -171,7 +171,7 @@ public class PlayerControl : MonoBehaviour
             float time = (finalPath[i].GetComponent<Walkable>().isStair) ? (1.5f) : (1.0f);
 
             Vector3 cubePos = finalPath[i].GetComponent<Walkable>().GetWalkPoint();
-            cubePos.y += 1.0f;
+            //cubePos.y += 1.0f;
 
             // 큐브로 이동하는 것을 시퀀스에 추가, 부드럽게 하기위해서 Linear를 사용 == add와 같다고 보면 됨
             seq.Append(transform.DOMove(cubePos, 0.2f * time).SetEase(Ease.Linear));
@@ -179,7 +179,7 @@ public class PlayerControl : MonoBehaviour
             // 이건 뭔지 잘 모르겠음
             if(!finalPath[i].GetComponent<Walkable>().dontRotate)
             {
-                seq.Join(transform.DOLookAt(finalPath[i].position, 0.1f, AxisConstraint.Y, Vector3.up));
+                //seq.Join(transform.DOLookAt(finalPath[i].position, 0.1f, AxisConstraint.Y, Vector3.up));
             }
         }
 
@@ -203,7 +203,7 @@ public class PlayerControl : MonoBehaviour
         // 레이캐스트 충돌
         RaycastHit playerHit;
 
-        // 
+        // 레이 발사
         if(Physics.Raycast(playerRay, out playerHit))
         {
             // 발판을 밟고 있다면
