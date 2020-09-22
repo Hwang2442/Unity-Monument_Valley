@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -76,12 +77,15 @@ public class RotObject : MonoBehaviour
                     {
                         if (currentAngle > i + 45)
                         {
-                            targetAngle = i + 90;                            
+                            targetAngle = i + 90;
                         }
                         else
                         {
                             targetAngle = i;
                         }
+
+                        transform.DORotate(new Vector3(0, 0, targetAngle - currentAngle), 0.6f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                        rotateObj.DORotate(new Vector3(0, 0, targetAngle - currentAngle), 0.6f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
 
                         break;
                     }
@@ -90,23 +94,23 @@ public class RotObject : MonoBehaviour
         }
         else
         {
-            float currentAngle = getAngle();
+            //float currentAngle = getAngle();
 
-            if(Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
-            {
-                if(targetAngle > currentAngle)
-                {
-                    setAngle(currentAngle + rotSpeed * Time.deltaTime);
-                }
-                else
-                {
-                    setAngle(currentAngle - rotSpeed * Time.deltaTime);
-                }
-            }
-            else if (Mathf.Abs(targetAngle - currentAngle) <= rotSpeed)
-            {
-                setAngle(targetAngle);
-            }
+            //if(Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
+            //{
+            //    if(targetAngle > currentAngle)
+            //    {
+            //        setAngle(currentAngle + rotSpeed * Time.deltaTime);
+            //    }
+            //    else
+            //    {
+            //        setAngle(currentAngle - rotSpeed * Time.deltaTime);
+            //    }
+            //}
+            //else if (Mathf.Abs(targetAngle - currentAngle) <= rotSpeed)
+            //{
+            //    setAngle(targetAngle);
+            //}
         }
         
         foreach (PathCondition pathCube in pathCubes)
