@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using DG.Tweening;
+using UnityEditorInternal;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class PlayerControl : MonoBehaviour
     public Transform currentCube;
     // 마우스 클릭한 큐브
     public Transform clickedCube;
+
+    public Animator anim;
 
     [Space]
     // 플레이어가 실제 이동할 경로
@@ -61,10 +64,24 @@ public class PlayerControl : MonoBehaviour
 
                     // 길찾기 시작
                     FindPath();
+
+                    for (int i = 1; i < finalPath.Count;)
+                    {
+                        if(finalPath[0].Equals(finalPath[i]))
+                        {
+                            finalPath.RemoveAt(i);                            
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    anim.SetBool("Walking", true);
                 }
             }
         }
-
+        
         FollowPath();
     }
 
@@ -132,17 +149,17 @@ public class PlayerControl : MonoBehaviour
 
     // 이건 뭐지
     private void BuildPath()
-    {        
+    {
         Transform cube = clickedCube;
 
         // 클릭한 큐브가 현재큐브와 같지 않을 때까지
-        while(cube != currentCube)
+        while (cube != currentCube)
         {
             // 실제 이동할 경로에 삽입
             finalPath.Add(cube);
 
             // 클릭한 큐브의 이전큐브가 None일 때
-            if(cube.GetComponent<Walkable>().previousBlock != null)
+            if (cube.GetComponent<Walkable>().previousBlock != null)
             {
                 // 잘 모르겠음
                 cube = cube.GetComponent<Walkable>().previousBlock;
@@ -161,16 +178,35 @@ public class PlayerControl : MonoBehaviour
     // 길을 따라 가는 함수
     private void FollowPath()
     {
-        // 경로가 없음
-        if(finalPath.Count == 0)
+        // 이동하지 않음
+        if (finalPath.Count == 0)
         {
             return;
         }
 
-        transform.LookAt(finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint());
-
-
+        // 다음으로 이동할 큐브
+        Walkable moveCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
         
+        // 방향을 바꾸지 않음
+        if(!moveCube.dontRotate)
+        {
+            transform.LookAt(moveCube.GetWalkPoint());
+        }
+
+        // 착시효과가 적용된 큐브는 거리가 실제로 멀기 때문에 보간을 이용
+        transform.position = Vector3.Lerp(transform.position, moveCube.GetWalkPoint(), Time.deltaTime * moveSpeed);
+
+        if(Vector3.Distance(transform.position, moveCube.GetWalkPoint()) < 0.01f)
+        {
+            transform.position = moveCube.GetWalkPoint();
+
+            finalPath.RemoveAt(finalPath.Count - 1);
+            
+            if(finalPath.Count == 0)
+            {
+                anim.SetBool("Walking", false);
+            }
+        }
     }
 
     private void Clear()
