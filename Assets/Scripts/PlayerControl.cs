@@ -11,15 +11,13 @@ public class PlayerControl : MonoBehaviour
     public Transform currentCube;
     // 마우스 클릭한 큐브
     public Transform clickedCube;
-    // 인디케이터?
-    public Transform indicator;
 
     [Space]
     // 플레이어가 실제 이동할 경로
     public List<Transform> finalPath = new List<Transform>();
 
-    // 이건 뭐지
-    private float blend;
+    [Space]
+    public float moveSpeed;
 
     void Start()
     {
@@ -66,6 +64,8 @@ public class PlayerControl : MonoBehaviour
                 }
             }
         }
+
+        FollowPath();
     }
 
     // 길찾기
@@ -79,6 +79,7 @@ public class PlayerControl : MonoBehaviour
         // 현재 큐브의 연결된 큐브 갯수만큼 루프
         foreach (WalkPath path in currentCube.GetComponent<Walkable>().possiblePaths)
         {
+            // 경로가 연결되어 있다면
             if(path.active)
             {
                 // 다음으로 이동할 큐브 리스트에 추가
@@ -94,7 +95,6 @@ public class PlayerControl : MonoBehaviour
         BuildPath();       
     }
 
-    // 이건 뭐지?
     private void ExploreCube(List<Transform> nextCubes, List<Transform> visitedCubes)
     {
         Transform current = nextCubes.First();
@@ -151,39 +151,26 @@ public class PlayerControl : MonoBehaviour
             {
                 return;
             }
-
-            finalPath.Insert(0, clickedCube);
-
-            FollowPath();
         }
+
+        finalPath.Insert(0, clickedCube);
+
+        //FollowPath();
     }
 
-    // 길을 따라 가는 함수인 듯
+    // 길을 따라 가는 함수
     private void FollowPath()
     {
-        // 시퀀스는 동작들을 모아놓은 배열이라 생각하면 됨
-        Sequence seq = DOTween.Sequence();        
-
-        // 경로만큼 루프
-        for(int i = finalPath.Count - 1; i > 0; i--)
+        // 경로가 없음
+        if(finalPath.Count == 0)
         {
-            // 계단인지 판단하여 이동속도 조정
-            float time = (finalPath[i].GetComponent<Walkable>().isStair) ? (1.5f) : (1.0f);
-
-            Vector3 cubePos = finalPath[i].GetComponent<Walkable>().GetWalkPoint();
-            //cubePos.y += 1.0f;
-
-            // 큐브로 이동하는 것을 시퀀스에 추가, 부드럽게 하기위해서 Linear를 사용 == add와 같다고 보면 됨
-            seq.Append(transform.DOMove(cubePos, 0.2f * time).SetEase(Ease.Linear));
-
-            // 이건 뭔지 잘 모르겠음
-            if(!finalPath[i].GetComponent<Walkable>().dontRotate)
-            {
-                //seq.Join(transform.DOLookAt(finalPath[i].position, 0.1f, AxisConstraint.Y, Vector3.up));
-            }
+            return;
         }
 
-        //seq.AppendCallback(() => Clear());
+        transform.LookAt(finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint());
+
+
+        
     }
 
     private void Clear()
@@ -198,8 +185,12 @@ public class PlayerControl : MonoBehaviour
     // 현재 플레이어가 밟고 있는 큐브 찾는 함수
     public void RayCastDown()
     {
-        // 플레이어 밑으로 레이캐스트 생성
-        Ray playerRay = new Ray(transform.position, -transform.up);
+        // 플레이어 센터 포지션 생성
+        Vector3 rayPos = transform.position;
+        rayPos.y += transform.localScale.y * 0.5f;
+        
+        // 레이 생성, 방향은 아래
+        Ray playerRay = new Ray(rayPos, -transform.up);
         // 레이캐스트 충돌
         RaycastHit playerHit;
 
@@ -210,11 +201,6 @@ public class PlayerControl : MonoBehaviour
             if(playerHit.transform.GetComponent<Walkable>() != null)
             {
                 currentCube = playerHit.transform;
-
-                // 계단에 따라서 위치 조정해야될 부분?
-                if(playerHit.transform.GetComponent<Walkable>().isStair)
-                {                    
-                }
             }
         }
     }
