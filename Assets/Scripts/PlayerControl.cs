@@ -65,18 +65,6 @@ public class PlayerControl : MonoBehaviour
                     // 길찾기 시작
                     FindPath();
 
-                    for (int i = 1; i < finalPath.Count;)
-                    {
-                        if(finalPath[0].Equals(finalPath[i]))
-                        {
-                            finalPath.RemoveAt(i);                            
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
                     anim.SetBool("Walking", true);
                 }
             }
@@ -132,7 +120,7 @@ public class PlayerControl : MonoBehaviour
             {
                 // 다음 이동 큐브에 삽입
                 nextCubes.Add(path.target);
-                // 이건 잘 모르겠음
+                
                 path.target.GetComponent<Walkable>().previousBlock = current;
             }
         }
@@ -147,7 +135,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    // 이건 뭐지
+    // 경로 생성
     private void BuildPath()
     {
         Transform cube = clickedCube;
@@ -160,8 +148,7 @@ public class PlayerControl : MonoBehaviour
 
             // 클릭한 큐브의 이전큐브가 None일 때
             if (cube.GetComponent<Walkable>().previousBlock != null)
-            {
-                // 잘 모르겠음
+            {                
                 cube = cube.GetComponent<Walkable>().previousBlock;
             }
             else
@@ -169,10 +156,6 @@ public class PlayerControl : MonoBehaviour
                 return;
             }
         }
-
-        finalPath.Insert(0, clickedCube);
-
-        //FollowPath();
     }
 
     // 길을 따라 가는 함수
