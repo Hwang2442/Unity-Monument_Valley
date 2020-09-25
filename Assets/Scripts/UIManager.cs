@@ -7,11 +7,14 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public Button stage1;
-    public Button stage2;
-
-    void Update()
+    public void RoadStage1()
     {
-        
+        SceneManager.LoadScene("Stage1");
     }
+
+    public void RoadStage2()
+    {
+        SceneManager.LoadScene("Stage2");
+    }
+
 }
