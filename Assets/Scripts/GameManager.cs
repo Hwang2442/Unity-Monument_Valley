@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    public Transform clearCube;
+
     private void Awake()
     {
         instance = this;
