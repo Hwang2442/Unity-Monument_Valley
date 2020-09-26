@@ -8,14 +8,20 @@ using UnityEditorInternal;
 public class PlayerControl : MonoBehaviour
 {
     [Space]
+    [Header("Cube Information")]
     // 현재 위치한 큐브
     public Transform currentCube;
     // 마우스 클릭한 큐브
     public Transform clickedCube;
 
+    [Space]
+    [Header("Animation")]
+    // 애니메이션
     public Animator anim;
+    public ParticleSystem clickEffect;
 
     [Space]
+    [Header("PathFinding")]
     // 플레이어가 실제 이동할 경로
     public List<Transform> finalPath = new List<Transform>();
 
@@ -59,6 +65,9 @@ public class PlayerControl : MonoBehaviour
                     // 클릭한 큐브 위치 설정
                     clickedCube = mouseHit.transform;
 
+                    clickEffect.transform.position = clickedCube.GetComponent<Walkable>().GetWalkPoint();
+                    clickEffect.Play();
+
                     // 경로 초기화
                     finalPath.Clear();
 
@@ -89,7 +98,7 @@ public class PlayerControl : MonoBehaviour
             {
                 // 다음으로 이동할 큐브 리스트에 추가
                 nextCubes.Add(path.target);
-                // 해당 큐브를 이전큐브로 등록?
+                
                 path.target.GetComponent<Walkable>().previousBlock = currentCube;
             }
         }
