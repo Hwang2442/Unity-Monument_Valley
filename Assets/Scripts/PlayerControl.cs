@@ -82,6 +82,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
         
+        // 길 따라가는 함수
         FollowPath();
     }
 
@@ -219,6 +220,11 @@ public class PlayerControl : MonoBehaviour
             if(finalPath.Count == 0)
             {
                 anim.SetBool("Walking", false);
+
+                if(GameManager.instance.clearCube.Equals(currentCube))
+                {
+                    anim.SetBool("Clear", true);
+                }
             }
         }
     }
