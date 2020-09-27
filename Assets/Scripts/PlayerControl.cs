@@ -74,7 +74,10 @@ public class PlayerControl : MonoBehaviour
                     // 길찾기 시작
                     FindPath();
 
-                    anim.SetBool("Walking", true);
+                    if(finalPath.Count > 0)
+                    {
+                        anim.SetBool("Walking", true);
+                    }
                 }
             }
         }
@@ -162,7 +165,26 @@ public class PlayerControl : MonoBehaviour
             }
             else
             {
-                return;
+                break;
+            }
+        }
+
+        if(finalPath.Count == 1)
+        {
+            bool walk = false;
+
+            foreach (WalkPath walkCube in currentCube.GetComponent<Walkable>().possiblePaths)
+            {
+                if(walkCube.target == finalPath.First() && walkCube.active)
+                {
+                    walk = true;
+                    break;
+                }
+            }
+            
+            if(!walk)
+            {
+                finalPath.Clear();
             }
         }
     }
@@ -185,7 +207,7 @@ public class PlayerControl : MonoBehaviour
             transform.LookAt(moveCube.GetWalkPoint());
         }
 
-        // 착시효과가 적용된 큐브는 거리가 실제로 멀기 때문에 보간을 이용
+        // 이동
         transform.position = Vector3.Lerp(transform.position, moveCube.GetWalkPoint(), Time.deltaTime * moveSpeed);
 
         if(Vector3.Distance(transform.position, moveCube.GetWalkPoint()) < 0.01f)
