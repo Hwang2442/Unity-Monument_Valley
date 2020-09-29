@@ -7,13 +7,21 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    [Space]
     public Transform clearCube;
+
+    [Space]
+    public float clearTime;
+    float elapseTime;
+
+    private bool isClear;
 
     private void Awake()
     {
         if(instance == null)
         {
             instance = this;
+            elapseTime = 0;
         }
     }
 
@@ -31,6 +39,20 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        
+        if(isClear)
+        {
+            elapseTime += Time.deltaTime;
+
+            if(elapseTime >= clearTime)
+            {
+                ChangeIntroScene();
+            }
+        }
+    }
+
+    public bool Clear
+    {
+        get { return isClear; }
+        set { isClear = value; }
     }
 }

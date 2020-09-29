@@ -66,9 +66,7 @@ public class RotObject : MonoBehaviour
             {
                 isRotate = false;
 
-                float currentAngle = getAngle();
-
-                Debug.Log(currentAngle);
+                float currentAngle = getAngle();                
 
                 // 자동으로 맞출 각도 찾기
                 for (int i = 270; i >= 0; i -= 90)
@@ -109,13 +107,13 @@ public class RotObject : MonoBehaviour
             //    setAngle(targetAngle);
             //}
         }
-        
-        foreach (PathCondition pathCube in pathCubes)
+
+        for (int i = 0; i < pathCubes.Count; i++)
         {
-            foreach (SinglePath singlePath in pathCube.path)
+            for (int j = 0; j < pathCubes[i].path.Count; j++)
             {
-                // 큐브의 이동경로 변수 설정
-                singlePath.block.possiblePaths[singlePath.index - 1].active = (transform.eulerAngles.Equals(pathCube.angle));
+                pathCubes[i].path[j].block.possiblePaths[pathCubes[i].path[j].index - 1].active =
+                    transform.eulerAngles.Equals(pathCubes[i].angle);
             }
         }
     }

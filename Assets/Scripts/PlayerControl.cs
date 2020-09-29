@@ -224,6 +224,8 @@ public class PlayerControl : MonoBehaviour
                 if(GameManager.instance.clearCube.Equals(currentCube))
                 {
                     anim.SetBool("Clear", true);
+
+                    GameManager.instance.Clear = true;
                 }
             }
         }
@@ -250,7 +252,7 @@ public class PlayerControl : MonoBehaviour
         // 레이캐스트 충돌
         RaycastHit playerHit;
 
-        // 레이 발사
+        // 레이 발사!!
         if(Physics.Raycast(playerRay, out playerHit))
         {
             // 발판을 밟고 있다면

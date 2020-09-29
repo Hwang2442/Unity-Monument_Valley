@@ -17,9 +17,7 @@ public class Walkable : MonoBehaviour
     public bool isStair = false;
     // 움직일 수 있는 땅?
     public bool movingGround = false;
-    // 버튼인가?
-    public bool isButton;
-    // 움직이지 않는가? 이건 잘 모르겠음
+    // 플레이어가 바라보는 방향 변경 유무
     public bool dontRotate;
 
     [Space]
@@ -30,14 +28,15 @@ public class Walkable : MonoBehaviour
     // 걷는 좌표 구하는 함수?
     public Vector3 GetWalkPoint()
     {
-        float stair = isStair ? stairOffset : 0;
+        float stair = (isStair) ? (stairOffset) : (0);
 
         return transform.position + transform.up * 0.5f - transform.up * stair;
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.white;        
+        // 큐브 위에 타겟 그리기
+        Gizmos.color = Color.white;
         Gizmos.DrawCube(GetWalkPoint(), new Vector3(0.1f, 0.1f, 0.1f));
 
         if(possiblePaths == null)
@@ -45,15 +44,15 @@ public class Walkable : MonoBehaviour
             return;
         }
 
-        foreach (WalkPath path in possiblePaths)
+        for(int i = 0; i < possiblePaths.Count; i++)
         {
-            if(path.target == null)
+            if(possiblePaths[i].target == null)
             {
-                return;
+                continue;
             }
 
-            Gizmos.color = path.active ? Color.green : Color.clear;
-            Gizmos.DrawLine(GetWalkPoint(), path.target.GetComponent<Walkable>().GetWalkPoint());
+            Gizmos.color = (possiblePaths[i].active) ? (Color.green) : (Color.clear);
+            Gizmos.DrawLine(GetWalkPoint(), possiblePaths[i].target.GetComponent<Walkable>().GetWalkPoint());
         }
     }
 }
