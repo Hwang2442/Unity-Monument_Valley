@@ -170,20 +170,20 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if(finalPath.Count == 1)
+        if (finalPath.Count > 0)
         {
             bool walk = false;
 
             foreach (WalkPath walkCube in currentCube.GetComponent<Walkable>().possiblePaths)
             {
-                if(walkCube.target == finalPath.First() && walkCube.active)
+                if (walkCube.target == finalPath[finalPath.Count - 1] && walkCube.active)
                 {
                     walk = true;
                     break;
                 }
             }
-            
-            if(!walk)
+
+            if (!walk)
             {
                 finalPath.Clear();
             }

@@ -6,6 +6,7 @@ using UnityEngine.Assertions.Must;
 public class Item : MonoBehaviour
 {
     public GameObject target;
+    public ParticleSystem createEffect;
 
     bool targetActive;
 
@@ -36,6 +37,9 @@ public class Item : MonoBehaviour
     {
         while(curChild < maxChild)
         {
+            createEffect.transform.position = target.transform.GetChild(curChild).position;
+            createEffect.Play();
+            
             target.transform.GetChild(curChild).gameObject.SetActive(true);
 
             yield return new WaitForSeconds(1.0f);
