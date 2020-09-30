@@ -69,7 +69,18 @@ public class PlayerControl : MonoBehaviour
                     // 클릭한 큐브 위치 설정
                     clickedCube = mouseHit.transform;
 
+                    // 이펙트 위치 조정
                     clickEffect.transform.position = clickedCube.GetComponent<Walkable>().GetWalkPoint();
+
+                    if(clickedCube.childCount > 0)
+                    {
+                        SetLayerObject(clickEffect.transform, "Top");
+                    }
+                    else
+                    {
+                        SetLayerObject(clickEffect.transform, "Default");
+                    }
+
                     clickEffect.Play();
 
                     // 경로 초기화
@@ -225,12 +236,17 @@ public class PlayerControl : MonoBehaviour
             {
                 anim.SetBool("Walking", false);
 
-                if(GameManager.instance.clearCube.Equals(currentCube))
+                if(GetComponent<GameManager>().clearCube.Equals(currentCube))
                 {
                     anim.SetBool("Clear", true);
-
-                    GameManager.instance.Clear = true;
                 }
+
+                //if(GameManager.instance.clearCube.Equals(currentCube))
+                //{
+                //    anim.SetBool("Clear", true);
+
+                //    GameManager.instance.Clear = true;
+                //}
             }
         }
     }

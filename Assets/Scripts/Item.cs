@@ -37,7 +37,7 @@ public class Item : MonoBehaviour
     {
         while(curChild < maxChild)
         {
-            createEffect.transform.position = target.transform.GetChild(curChild).position;
+            createEffect.transform.position = target.transform.GetChild(curChild).GetComponent<Walkable>().GetWalkPoint();
             createEffect.Play();
             
             target.transform.GetChild(curChild).gameObject.SetActive(true);
