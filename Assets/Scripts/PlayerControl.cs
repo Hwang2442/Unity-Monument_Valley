@@ -32,6 +32,8 @@ public class PlayerControl : MonoBehaviour
     {
         // 플레이어가 밟고 있는 큐브 설정
         RayCastDown();
+
+        LayerCheck();
     }
 
     void Update()
@@ -39,8 +41,10 @@ public class PlayerControl : MonoBehaviour
         // 플레이어가 밟고 있는 큐브 설정
         RayCastDown();
 
+        LayerCheck();
+
         // 현재 밟고 있는 큐브가 움직이는 땅인 경우
-        if(currentCube.GetComponent<Walkable>().movingGround)
+        if (currentCube.GetComponent<Walkable>().movingGround)
         {
             transform.parent = currentCube.parent;
         }
@@ -260,6 +264,47 @@ public class PlayerControl : MonoBehaviour
             {
                 currentCube = playerHit.transform;
             }
+        }
+    }
+
+    void LayerCheck()
+    {
+        bool isTop = false;
+
+        if(currentCube.childCount > 0)
+        {
+            isTop = true;
+        }
+
+        if(!isTop)
+        {
+            for (int i = 0; i < currentCube.GetComponent<Walkable>().possiblePaths.Count; i++)
+            {
+                if (currentCube.GetComponent<Walkable>().possiblePaths[i].target.childCount > 0)
+                {
+                    isTop = true;
+                    break;
+                }
+            }
+        }
+
+        if(isTop)
+        {
+            SetLayerObject(transform, "Top");
+        }
+        else
+        {
+            SetLayerObject(transform, "Default");
+        }
+    }
+
+    void SetLayerObject(Transform tr, string layerName)
+    {
+        tr.gameObject.layer = LayerMask.NameToLayer(layerName);
+
+        for(int i = 0; i < tr.childCount; i++)
+        {
+            SetLayerObject(tr.GetChild(i), layerName);
         }
     }
 }
