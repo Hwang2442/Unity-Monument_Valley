@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-
-public class UIManager : MonoBehaviour
+public class SceneControl : MonoBehaviour
 {
     public void RoadStage1()
     {
@@ -17,4 +15,13 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene("Stage2");
     }
 
+    public void ReloadScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void RoadIntro()
+    {
+        SceneManager.LoadScene("Intro");
+    }
 }

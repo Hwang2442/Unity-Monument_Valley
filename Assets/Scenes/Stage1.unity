@@ -3202,7 +3202,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &486418870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3272,6 +3272,7 @@ GameObject:
   - component: {fileID: 516598942}
   - component: {fileID: 516598941}
   - component: {fileID: 516598940}
+  - component: {fileID: 516598943}
   m_Layer: 5
   m_Name: BackIntro
   m_TagString: Untagged
@@ -3341,9 +3342,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 318968881}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: ChangeIntroScene
+      - m_Target: {fileID: 516598943}
+        m_TargetAssemblyTypeName: SceneControl, Assembly-CSharp
+        m_MethodName: RoadIntro
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3391,6 +3392,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 516598938}
   m_CullTransparentMesh: 0
+--- !u!114 &516598943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 516598938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3510e3d2a3562ed43a98052a1e540770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &535442346
 GameObject:
   m_ObjectHideFlags: 0
@@ -14217,6 +14230,7 @@ GameObject:
   - component: {fileID: 1467927942}
   - component: {fileID: 1467927941}
   - component: {fileID: 1467927940}
+  - component: {fileID: 1467927943}
   m_Layer: 5
   m_Name: Restart
   m_TagString: Untagged
@@ -14286,9 +14300,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 318968881}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: RestartScene
+      - m_Target: {fileID: 1467927943}
+        m_TargetAssemblyTypeName: SceneControl, Assembly-CSharp
+        m_MethodName: ReloadScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14336,6 +14350,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1467927938}
   m_CullTransparentMesh: 0
+--- !u!114 &1467927943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1467927938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3510e3d2a3562ed43a98052a1e540770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1470653356
 Mesh:
   m_ObjectHideFlags: 0

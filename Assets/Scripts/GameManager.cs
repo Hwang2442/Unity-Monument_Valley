@@ -22,31 +22,26 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        
+        if (instance == null)
+        {
+            instance = this;
+        }
     }
 
     private void Start()
     {
+        fadeImg.gameObject.SetActive(true);
+
+        fadeImg.color = new Color(0, 0, 0, 1.0f);
+
         StartCoroutine(FadeIn(0.5f));
 
         isClear = isReady = false;
     }
 
-    // 스테이지 다시시작
-    public void RestartScene()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
-
-    // 인트로 씬으로 돌아감
-    public void ChangeIntroScene()
-    {
-        SceneManager.LoadScene("Intro");
-    }
-
     void Update()
     {
-        //if(!isReady)
+        //if (!isReady)
         //{
         //    if (Input.GetMouseButtonDown(0))
         //    {
@@ -54,13 +49,13 @@ public class GameManager : MonoBehaviour
         //    }
         //}
 
-        if(isClear)
+        if (isClear)
         {
             elapseTime += Time.deltaTime;
 
             if(elapseTime >= clearTime)
             {
-                ChangeIntroScene();
+                
             }
         }
     }
@@ -80,6 +75,8 @@ public class GameManager : MonoBehaviour
 
         fadeColor.a = endAlpha;
         fadeImg.color = fadeColor;
+
+        yield return null;
     }
 
     IEnumerator FadeOut(float endAlpha)
@@ -97,6 +94,8 @@ public class GameManager : MonoBehaviour
 
         fadeColor.a = endAlpha;
         fadeImg.color = fadeColor;
+
+        yield return null;
     }
 
     public bool Clear

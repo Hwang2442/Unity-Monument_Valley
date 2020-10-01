@@ -236,12 +236,7 @@ public class PlayerControl : MonoBehaviour
             {
                 anim.SetBool("Walking", false);
 
-                if(GetComponent<GameManager>().clearCube.Equals(currentCube))
-                {
-                    anim.SetBool("Clear", true);
-                }
-
-                //if(GameManager.instance.clearCube.Equals(currentCube))
+                //if (GameManager.instance.clearCube.Equals(currentCube))
                 //{
                 //    anim.SetBool("Clear", true);
 
