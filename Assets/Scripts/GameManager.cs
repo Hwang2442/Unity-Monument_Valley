@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,12 +15,15 @@ public class GameManager : MonoBehaviour
     float elapseTime;
 
     public Image fadeImg;
+    public Transform text;
 
     private bool isClear;
     private bool isReady;
 
     private void Awake()
     {
+        Transform tr;
+
         if (instance == null)
         {
             instance = this;
@@ -34,7 +36,15 @@ public class GameManager : MonoBehaviour
 
         fadeImg.color = new Color(0, 0, 0, 1.0f);
 
-        StartCoroutine(FadeIn(0.5f));
+        StartCoroutine(FadeOut(fadeImg, 0.5f));
+
+        //for (int i = 0; i < text.childCount; i++)
+        //{
+        //    text.GetChild(i).GetComponent<Text>().color = new Color(1.0f, 1.0f, 1.0f, 0);
+        //    StartCoroutine(FadeOut(text.GetChild(i).GetComponent<Text>(), 1.0f));
+        //}
+
+        //StartCoroutine(FadeOut(text.GetChild(0).GetComponent<Text>(), 1.0f));
 
         isClear = isReady = false;
     }
@@ -60,40 +70,80 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator FadeIn(float endAlpha)
+    IEnumerator FadeIn(Image target, float endAlpha)
     {
-        Color fadeColor = fadeImg.color;
+        Color fadeColor = target.color;
 
-        while (fadeImg.color.a > endAlpha)
+        while (target.color.a < endAlpha)
         {
             fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
 
-            fadeImg.color = fadeColor;
+            target.color = fadeColor;
 
             yield return null;
         }
 
         fadeColor.a = endAlpha;
-        fadeImg.color = fadeColor;
+        target.color = fadeColor;
 
         yield return null;
     }
 
-    IEnumerator FadeOut(float endAlpha)
+    IEnumerator FadeIn(Text target, float endAlpha)
     {
-        Color fadeColor = fadeImg.color;
+        Color fadeColor = target.color;
 
-        while (fadeImg.color.a < endAlpha)
+        while (target.color.a < endAlpha)
         {
-            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 1.0f);
+            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
 
-            fadeImg.color = fadeColor;
+            target.color = fadeColor;
 
             yield return null;
         }
 
         fadeColor.a = endAlpha;
-        fadeImg.color = fadeColor;
+        target.color = fadeColor;
+
+        yield return null;
+    }
+
+    IEnumerator FadeOut(Image target, float endAlpha)
+    {
+        Color fadeColor = target.color;
+
+        while (target.color.a > endAlpha)
+        {
+            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
+
+            target.color = fadeColor;
+
+            yield return null;
+        }
+
+        fadeColor.a = endAlpha;
+        target.color = fadeColor;
+
+        Debug.Log("ok");
+
+        yield return null;
+    }
+
+    IEnumerator FadeOut(Text target, float endAlpha)
+    {
+        Color fadeColor = target.color;
+
+        while (target.color.a > endAlpha)
+        {
+            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
+
+            target.color = fadeColor;
+
+            yield return null;
+        }
+
+        fadeColor.a = endAlpha;
+        target.color = fadeColor;
 
         yield return null;
     }
