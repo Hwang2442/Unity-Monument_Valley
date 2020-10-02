@@ -14,16 +14,15 @@ public class GameManager : MonoBehaviour
     public float clearTime;
     float elapseTime;
 
+    [Space]
     public Image fadeImg;
-    public Transform text;
+    public List<Text> fadeText = new List<Text>();
 
     private bool isClear;
     private bool isReady;
 
     private void Awake()
     {
-        Transform tr;
-
         if (instance == null)
         {
             instance = this;
@@ -36,30 +35,44 @@ public class GameManager : MonoBehaviour
 
         fadeImg.color = new Color(0, 0, 0, 1.0f);
 
-        StartCoroutine(FadeOut(fadeImg, 0.5f));
-
-        //for (int i = 0; i < text.childCount; i++)
-        //{
-        //    text.GetChild(i).GetComponent<Text>().color = new Color(1.0f, 1.0f, 1.0f, 0);
-        //    StartCoroutine(FadeOut(text.GetChild(i).GetComponent<Text>(), 1.0f));
-        //}
-
-        //StartCoroutine(FadeOut(text.GetChild(0).GetComponent<Text>(), 1.0f));
+        for (int i = 0; i < fadeText.Count; i++)
+        {
+            fadeText[i].color = new Color(1.0f, 1.0f, 1.0f, 0);
+            StartCoroutine(FadeIn(fadeText[i], 1.0f, 0.6f));
+        }
 
         isClear = isReady = false;
     }
 
     void Update()
     {
-        //if (!isReady)
-        //{
-        //    if (Input.GetMouseButtonDown(0))
-        //    {
-        //        StartCoroutine(FadeIn(0));
-        //    }
-        //}
+        if (!isReady)
+        {
+            if (fadeText[0].color.a == 1.0f && fadeImg.color.a == 1.0f)
+            {
+                StartCoroutine(FadeOut(fadeImg, 0.35f, 0.4f));
+            }
 
-        if (isClear)
+            if (fadeText[0].color.a == 1.0f && fadeImg.color.a == 0.35f)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    for (int i = 0; i < fadeText.Count; i++)
+                    {
+                        StartCoroutine(FadeOut(fadeText[i], 0, 0.5f));
+                    }
+
+                    StartCoroutine(FadeOut(fadeImg, 0, 0.5f));
+                }
+            }
+
+            if (fadeText[0].color.a == 0 && fadeImg.color.a == 0)
+            {
+                isReady = true;
+            }
+        }
+        
+        if (isClear && isReady)
         {
             elapseTime += Time.deltaTime;
 
@@ -70,15 +83,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    IEnumerator FadeIn(Image target, float endAlpha)
+    // 투명 >> 불투명
+    IEnumerator FadeIn(Image target, float endAlpha, float speed)
     {
         Color fadeColor = target.color;
+        Color originColor = target.color;
+
+        float timing = 0;
 
         while (target.color.a < endAlpha)
         {
-            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
+            fadeColor.a = Mathf.Lerp(originColor.a, endAlpha, timing);
 
             target.color = fadeColor;
+
+            timing += Time.deltaTime * speed;
 
             yield return null;
         }
@@ -89,15 +108,46 @@ public class GameManager : MonoBehaviour
         yield return null;
     }
 
-    IEnumerator FadeIn(Text target, float endAlpha)
+    // 불투명 >> 투명
+    IEnumerator FadeOut(Image target, float endAlpha, float speed)
     {
         Color fadeColor = target.color;
+        Color originColor = target.color;
+
+        float timing = 0;
+
+        while (target.color.a > endAlpha)
+        {
+            fadeColor.a = Mathf.Lerp(originColor.a, endAlpha, timing);
+
+            target.color = fadeColor;
+
+            timing += Time.deltaTime * speed;
+
+            yield return null;
+        }
+
+        fadeColor.a = endAlpha;
+        target.color = fadeColor;
+
+        yield return null;
+    }
+
+    // 투명 >> 불투명
+    IEnumerator FadeIn(Text target, float endAlpha, float speed)
+    {
+        Color fadeColor = target.color;
+        Color originColor = target.color;
+
+        float timing = 0;
 
         while (target.color.a < endAlpha)
         {
-            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
+            fadeColor.a = Mathf.Lerp(originColor.a, endAlpha, timing);
 
             target.color = fadeColor;
+
+            timing += Time.deltaTime * speed;
 
             yield return null;
         }
@@ -107,37 +157,22 @@ public class GameManager : MonoBehaviour
 
         yield return null;
     }
-
-    IEnumerator FadeOut(Image target, float endAlpha)
+    
+    // 불투명 >> 투명
+    IEnumerator FadeOut(Text target, float endAlpha, float speed)
     {
         Color fadeColor = target.color;
+        Color originColor = target.color;
+
+        float timing = 0;
 
         while (target.color.a > endAlpha)
         {
-            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
+            fadeColor.a = Mathf.Lerp(originColor.a, endAlpha, timing);
 
             target.color = fadeColor;
 
-            yield return null;
-        }
-
-        fadeColor.a = endAlpha;
-        target.color = fadeColor;
-
-        Debug.Log("ok");
-
-        yield return null;
-    }
-
-    IEnumerator FadeOut(Text target, float endAlpha)
-    {
-        Color fadeColor = target.color;
-
-        while (target.color.a > endAlpha)
-        {
-            fadeColor.a = Mathf.Lerp(fadeImg.color.a, endAlpha, Time.deltaTime * 0.5f);
-
-            target.color = fadeColor;
+            timing += Time.deltaTime * speed;
 
             yield return null;
         }

@@ -54,9 +54,8 @@ public class PlayerControl : MonoBehaviour
         }
 
         // 마우스 클릭
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && GameManager.instance.Ready)
         {
-            // 스크린 터치하고 좌표?
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit mouseHit;
 
