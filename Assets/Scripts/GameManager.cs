@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < fadeText.Count; i++)
         {
+            // 검은 화면에 글자만 페이드 인
             fadeText[i].color = new Color(1.0f, 1.0f, 1.0f, 0);
             StartCoroutine(FadeIn(fadeText[i], 1.0f, 0.6f));
         }
@@ -48,26 +49,33 @@ public class GameManager : MonoBehaviour
     {
         if (!isReady)
         {
+            // 글자 페이드 인이 완료되었다면
             if (fadeText[0].color.a == 1.0f && fadeImg.color.a == 1.0f)
             {
+                // 검은 화면을 페이드 아웃
                 StartCoroutine(FadeOut(fadeImg, 0.35f, 0.4f));
             }
 
+            // 글자와 검은 화면이 모두 세팅되어 있다면
             if (fadeText[0].color.a == 1.0f && fadeImg.color.a == 0.35f)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     for (int i = 0; i < fadeText.Count; i++)
                     {
-                        StartCoroutine(FadeOut(fadeText[i], 0, 0.5f));
+                        // 글자 페이드 아웃
+                        StartCoroutine(FadeOut(fadeText[i], 0, 0.65f));
                     }
 
-                    StartCoroutine(FadeOut(fadeImg, 0, 0.5f));
+                    // 검은 화면 페이드 아웃
+                    StartCoroutine(FadeOut(fadeImg, 0, 0.65f));
                 }
             }
 
+            // 글자와 검은 화면이 모두 보이지 않는다면
             if (fadeText[0].color.a == 0 && fadeImg.color.a == 0)
             {
+                // 게임 컨트롤 가능
                 isReady = true;
             }
         }
