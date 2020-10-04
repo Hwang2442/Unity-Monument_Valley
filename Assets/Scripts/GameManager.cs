@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -82,11 +83,13 @@ public class GameManager : MonoBehaviour
         
         if (isClear && isReady)
         {
-            elapseTime += Time.deltaTime;
+            StartCoroutine(FadeIn(fadeImg, 1.0f, 0.4f));
 
-            if(elapseTime >= clearTime)
+            if (fadeImg.color.a == 1.0f)
             {
-                
+                SoundManager.instance.stop(SceneManager.GetActiveScene().name + "BGM");
+
+                SceneManager.LoadScene("Intro");
             }
         }
     }

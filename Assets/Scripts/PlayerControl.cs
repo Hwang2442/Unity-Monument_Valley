@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using DG.Tweening;
-using UnityEditorInternal;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -25,8 +23,8 @@ public class PlayerControl : MonoBehaviour
     // 플레이어가 실제 이동할 경로
     public List<Transform> finalPath = new List<Transform>();
 
-    Vector3 pastCube;
-    Vector3 nextCube;
+    Walkable pastCube;
+    Walkable nextCube;
     float timing = 0;
 
     [Space]
@@ -38,15 +36,13 @@ public class PlayerControl : MonoBehaviour
         RayCastDown();
 
         // 플레이어 레이어 설정
-        LayerCheck();
+        LayerCheck(currentCube);
     }
 
     void Update()
     {
         // 플레이어가 밟고 있는 큐브 설정
-        RayCastDown();
-
-        LayerCheck();
+        RayCastDown();        
 
         // 현재 밟고 있는 큐브가 움직이는 땅인 경우
         if (currentCube.GetComponent<Walkable>().movingGround)
@@ -71,7 +67,7 @@ public class PlayerControl : MonoBehaviour
                 if(mouseHit.transform.GetComponent<Walkable>() != null)
                 {
                     // 클릭음 재생
-                    //SoundManager.instance.play("Navi", 0.5f);
+                    SoundManager.instance.play("Navi", 0.5f);
 
                     // 클릭한 큐브 위치 설정
                     clickedCube = mouseHit.transform;
@@ -111,15 +107,15 @@ public class PlayerControl : MonoBehaviour
         List<Transform> pastCubes = new List<Transform>();
 
         // 현재 큐브의 연결된 큐브 갯수만큼 루프
-        foreach (WalkPath path in currentCube.GetComponent<Walkable>().possiblePaths)
+        for (int i = 0; i < currentCube.GetComponent<Walkable>().possiblePaths.Count; i++)
         {
-            // 경로가 연결되어 있다면
-            if(path.active)
+            WalkPath walkPath = currentCube.GetComponent<Walkable>().possiblePaths[i];
+
+            if (walkPath.active)
             {
-                // 다음으로 이동할 큐브 리스트에 추가
-                nextCubes.Add(path.target);
-                
-                path.target.GetComponent<Walkable>().previousBlock = currentCube;
+                nextCubes.Add(walkPath.target);
+
+                walkPath.target.GetComponent<Walkable>().previousBlock = currentCube;
             }
         }
 
@@ -142,17 +138,30 @@ public class PlayerControl : MonoBehaviour
         }
 
         // 현재 큐브의 이동 가능한 큐브만큼 반복
-        foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
+        for (int i = 0; i < current.GetComponent<Walkable>().possiblePaths.Count; i++)
         {
-            // 방문했던 큐브중에 없고 && 길이 활성화되어 있을 때
-            if(!visitedCubes.Contains(path.target) && path.active)
+            WalkPath walkPath = current.GetComponent<Walkable>().possiblePaths[i];
+
+            if (!visitedCubes.Contains(walkPath.target) && walkPath.active)
             {
-                // 다음 이동 큐브에 삽입
-                nextCubes.Add(path.target);
-                
-                path.target.GetComponent<Walkable>().previousBlock = current;
+                nextCubes.Add(walkPath.target);
+
+                walkPath.target.GetComponent<Walkable>().previousBlock = current;
             }
+
         }
+
+        //foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
+        //{
+        //    // 방문했던 큐브중에 없고 && 길이 활성화되어 있을 때
+        //    if(!visitedCubes.Contains(path.target) && path.active)
+        //    {
+        //        // 다음 이동 큐브에 삽입
+        //        nextCubes.Add(path.target);
+                
+        //        path.target.GetComponent<Walkable>().previousBlock = current;
+        //    }
+        //}
 
         // 방문한 큐브 리스트에 현재 큐브를 삽입
         visitedCubes.Add(current);
@@ -209,18 +218,16 @@ public class PlayerControl : MonoBehaviour
 
         if (finalPath.Count > 0)
         {
-            pastCube = currentCube.GetComponent<Walkable>().GetWalkPoint();
-            nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
+            pastCube = currentCube.GetComponent<Walkable>();
+            nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
 
-            transform.LookAt(nextCube);
+            transform.LookAt(nextCube.GetWalkPoint());
 
             timing = 0;
 
             anim.SetBool("Walking", true);
         }
     }
-
-    
 
     void FollowPath()
     {
@@ -229,34 +236,42 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.Lerp(pastCube, nextCube, timing);
+        LayerCheck(pastCube.transform);
+
+        transform.position = Vector3.Lerp(pastCube.GetWalkPoint(), nextCube.GetWalkPoint(), timing);
 
         if (timing >= 1.0f)
         {
             timing = 0;
 
-            pastCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
+            pastCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
 
+            finalPath[finalPath.Count - 1].GetComponent<Walkable>().previousBlock = null;
             finalPath.RemoveAt(finalPath.Count - 1);
 
             if (finalPath.Count > 0)
             {
-                nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
+                nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
 
-                transform.LookAt(nextCube);
+                if (!currentCube.GetComponent<Walkable>().dontRotate)
+                {
+                    transform.LookAt(nextCube.GetWalkPoint());
+                }
 
                 return;
             }
             else
             {
+                LayerCheck(nextCube.transform);
+
                 anim.SetBool("Walking", false);
 
-                //if (GameManager.instance.clearCube = currentCube)
-                //{
-                //    anim.SetBool("Clear", true);
+                if (currentCube.Equals(GameManager.instance.clearCube))
+                {
+                    anim.SetBool("Clear", true);
 
-                //    GameManager.instance.Clear = true;
-                //}
+                    GameManager.instance.Clear = true;
+                }
             }
         }
 
@@ -295,20 +310,20 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    void LayerCheck()
+    void LayerCheck(Transform cube)
     {
         bool isTop = false;
 
-        if(currentCube.childCount > 0)
+        if (cube.childCount > 0)
         {
             isTop = true;
         }
 
-        if(!isTop)
+        if (!isTop)
         {
-            for (int i = 0; i < currentCube.GetComponent<Walkable>().possiblePaths.Count; i++)
+            for (int i = 0; i < cube.GetComponent<Walkable>().possiblePaths.Count; i++)
             {
-                if (currentCube.GetComponent<Walkable>().possiblePaths[i].target.childCount > 0)
+                if (cube.GetComponent<Walkable>().possiblePaths[i].target.childCount > 0)
                 {
                     isTop = true;
                     break;
@@ -316,7 +331,7 @@ public class PlayerControl : MonoBehaviour
             }
         }
 
-        if(isTop)
+        if (isTop)
         {
             SetLayerObject(transform, "Top");
         }

@@ -46,11 +46,28 @@ public class SoundManager : MonoBehaviour
                 }
                 else
                 {
-
                     effect.PlayOneShot(sounds[i].audio, volume);
                 }
 
                 break;
+            }
+        }
+    }
+
+    public void stop(string audioName)
+    {
+        for (int i = 0; i < sounds.Count; i++)
+        {
+            if (audioName == sounds[i].audio.name)
+            {
+                if (sounds[i].isBGM)
+                {
+                    bgm.Stop();
+                }
+                else
+                {
+                    effect.Stop();
+                }
             }
         }
     }

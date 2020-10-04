@@ -9,6 +9,8 @@ public class SceneControl : MonoBehaviour
     {
         SoundManager.instance.play("StageSelect", 0.5f);
 
+        SoundManager.instance.play("Stage1BGM");
+
         SceneManager.LoadScene("Stage1");
     }
 
@@ -16,11 +18,15 @@ public class SceneControl : MonoBehaviour
     {
         SoundManager.instance.play("StageSelect", 0.5f);
 
+        SoundManager.instance.play("Stage2BGM");
+
         SceneManager.LoadScene("Stage2");
     }
 
     public void ReloadScene()
     {
+        SoundManager.instance.play(SceneManager.GetActiveScene().name + "BGM");
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 

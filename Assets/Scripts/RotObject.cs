@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -22,12 +21,10 @@ public class RotObject : MonoBehaviour
     public float rotSpeed;
 
     bool isRotate;
-    public float targetAngle;
 
     void Start()
     {
         isRotate = false;
-        targetAngle = 0;
     }
 
     void Update()
@@ -55,18 +52,35 @@ public class RotObject : MonoBehaviour
         {
             Vector2 rot = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 
-            Debug.Log(rot);
-
             rot *= rotSpeed;
 
-            setAngle(rot.x);
+            // 레버 회전
+            transform.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
+                    ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
+                    ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
+
+            // 오브젝트 회전
+            rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
+                ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
+                ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
+
+            // 각도 확인 후 큐브 경로 설정
+            for (int i = 0; i < pathCubes.Count; i++)
+            {
+                for (int j = 0; j < pathCubes[i].path.Count; j++)
+                {
+                    pathCubes[i].path[j].block.possiblePaths[pathCubes[i].path[j].index - 1].active =
+                        transform.eulerAngles.Equals(pathCubes[i].angle);
+                }
+            }
 
             // 마우스를 떼면 더 이상 움직이지 않음
             if (Input.GetMouseButtonUp(0))
             {
                 isRotate = false;
 
-                float currentAngle = getAngle();                
+                float currentAngle = getAngle();
+                float targetAngle;
 
                 // 자동으로 맞출 각도 찾기
                 for (int i = 270; i >= 0; i -= 90)
@@ -82,32 +96,53 @@ public class RotObject : MonoBehaviour
                             targetAngle = i;
                         }
 
-                        Vector3 setAngle = new Vector3((axisOfRotate == AxisOfRotate.X) ? (targetAngle - currentAngle) : 0,
-                            (axisOfRotate == AxisOfRotate.Y) ? (targetAngle - currentAngle) : 0,
-                            (axisOfRotate == AxisOfRotate.Z) ? (targetAngle - currentAngle) : 0);
-
-                        transform.DORotate(setAngle, 0.5f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
-                        rotateObj.DORotate(setAngle, 0.5f, RotateMode.WorldAxisAdd).SetEase(Ease.OutBack);
+                        StartCoroutine(Rotate(currentAngle, targetAngle));
 
                         break;
                     }
                 }
             }
         }
-        else
-        {
-            //float currentAngle = getAngle();
+    }
 
-            //if (Mathf.Abs(targetAngle - currentAngle) > rotSpeed)
-            //{
-            //    setAngle(currentAngle + rotSpeed * Time.deltaTime);
-            //}
-            //else if (Mathf.Abs(targetAngle - currentAngle) <= rotSpeed)
-            //{
-            //    setAngle(targetAngle);
-            //}
+    IEnumerator Rotate(float startAngle, float finalAngle)
+    {
+        float timing = 0;
+
+        // 튕길 각도
+        float firstAngle = (finalAngle > startAngle) ? (finalAngle + 12.5f) : (finalAngle - 12.5f);
+        // 다음 각도
+        float nextAngle = firstAngle;
+
+        // 서브 앵글
+        while (timing < 1.0f)
+        {
+            float angle = Mathf.Lerp(startAngle, nextAngle, timing);
+
+            setAngle(angle);
+
+            timing += Time.deltaTime * rotSpeed;
+
+            if (timing >= 1.0f)
+            {
+                setAngle(nextAngle);
+
+                // 한 번 튕긴 경우
+                if (nextAngle == firstAngle)
+                {
+                    startAngle = nextAngle;
+                    nextAngle = finalAngle;
+                    timing = 0;
+                }
+            }
+
+            yield return null;
         }
 
+        // 360도 넘어가는 경우
+        setAngle((finalAngle >= 360) ? (finalAngle - 360) : (finalAngle));
+
+        // 각도 확인 후 큐브 경로 설정
         for (int i = 0; i < pathCubes.Count; i++)
         {
             for (int j = 0; j < pathCubes[i].path.Count; j++)
@@ -116,31 +151,35 @@ public class RotObject : MonoBehaviour
                     transform.eulerAngles.Equals(pathCubes[i].angle);
             }
         }
+
+        yield return null;
     }
 
     private void setAngle(float angle)
     {
-        transform.Rotate(((axisOfRotate == AxisOfRotate.X) ? (angle) : (0)),
-                ((axisOfRotate == AxisOfRotate.Y) ? (angle) : (0)),
-                ((axisOfRotate == AxisOfRotate.Z) ? (angle) : (0)));
+        transform.rotation = Quaternion.Euler(new Vector3(
+            (axisOfRotate == AxisOfRotate.X) ? angle : 0,
+            (axisOfRotate == AxisOfRotate.Y) ? angle : 0,
+            (axisOfRotate == AxisOfRotate.Z) ? angle : 0));
 
-        rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (angle) : (0)),
-            ((axisOfRotate == AxisOfRotate.Y) ? (angle) : (0)),
-            ((axisOfRotate == AxisOfRotate.Z) ? (angle) : (0)));
+        rotateObj.rotation = Quaternion.Euler(new Vector3(
+            (axisOfRotate == AxisOfRotate.X) ? angle : 0,
+            (axisOfRotate == AxisOfRotate.Y) ? angle : 0,
+            (axisOfRotate == AxisOfRotate.Z) ? angle : 0));
     }
 
     private float getAngle()
     {
-        float answer = 0;
+        float ret = 0;
 
         switch (axisOfRotate)
         {
-            case AxisOfRotate.X: answer = transform.eulerAngles.x; break;
-            case AxisOfRotate.Y: answer = transform.eulerAngles.y; break;
-            case AxisOfRotate.Z: answer = transform.eulerAngles.z; break;
+            case AxisOfRotate.X: ret = transform.eulerAngles.x; break;
+            case AxisOfRotate.Y: ret = transform.eulerAngles.y; break;
+            case AxisOfRotate.Z: ret = transform.eulerAngles.z; break;
         }
 
-        return answer;
+        return ret;
     }
 }
 
