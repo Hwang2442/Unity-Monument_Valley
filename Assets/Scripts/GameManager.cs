@@ -70,6 +70,8 @@ public class GameManager : MonoBehaviour
 
                     // 검은 화면 페이드 아웃
                     StartCoroutine(FadeOut(fadeImg, 0, 0.65f));
+
+                    SoundManager.instance.play("BackClick");
                 }
             }
 

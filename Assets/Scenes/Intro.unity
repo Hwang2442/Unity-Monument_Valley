@@ -365,8 +365,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.69803923, g: 0.69803923, b: 0.69803923, a: 1}
+    m_PressedColor: {r: 0.41568628, g: 0.41568628, b: 0.41568628, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -828,8 +828,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}
+    m_PressedColor: {r: 0.41568628, g: 0.41568628, b: 0.41568628, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -1108,6 +1108,14 @@ MonoBehaviour:
     isBGM: 1
   - audio: {fileID: 8300000, guid: 9a0f4e179c1c15749bf5f12f8a921a48, type: 3}
     isBGM: 1
+  - audio: {fileID: 8300000, guid: 8b437a8355c670741bf3e55e78ab702f, type: 3}
+    isBGM: 1
+  - audio: {fileID: 8300000, guid: 76442c5dc57f3f642821a09a904f6199, type: 3}
+    isBGM: 0
+  - audio: {fileID: 8300000, guid: 8c8a2e0cb389de741824830e6943cab4, type: 3}
+    isBGM: 0
+  - audio: {fileID: 8300000, guid: ee943d7665e41434c8af06fc059a5edb, type: 3}
+    isBGM: 0
 --- !u!4 &1969266713
 Transform:
   m_ObjectHideFlags: 0

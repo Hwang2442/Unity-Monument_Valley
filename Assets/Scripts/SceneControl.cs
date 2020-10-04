@@ -7,6 +7,8 @@ public class SceneControl : MonoBehaviour
 {
     public void RoadStage1()
     {
+        SoundManager.instance.stop("IntroBGM");
+
         SoundManager.instance.play("StageSelect", 0.5f);
 
         SoundManager.instance.play("Stage1BGM");
@@ -16,6 +18,8 @@ public class SceneControl : MonoBehaviour
 
     public void RoadStage2()
     {
+        SoundManager.instance.stop("IntroBGM");
+
         SoundManager.instance.play("StageSelect", 0.5f);
 
         SoundManager.instance.play("Stage2BGM");

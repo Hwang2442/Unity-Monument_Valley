@@ -114,6 +114,8 @@ public class RotObject : MonoBehaviour
         // 다음 각도
         float nextAngle = (outBack) ? (firstAngle) : (finalAngle);
 
+        int soundNum = 1;
+
         // 서브 앵글
         while (timing < 1.0f)
         {
@@ -126,6 +128,9 @@ public class RotObject : MonoBehaviour
             if (timing >= 1.0f)
             {
                 setAngle(nextAngle);
+
+                SoundManager.instance.play("RotateSound_" + soundNum.ToString(), 0.5f);
+                soundNum++;
 
                 // 한 번 튕긴 경우
                 if (nextAngle != finalAngle)
