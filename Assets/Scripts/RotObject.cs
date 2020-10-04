@@ -21,10 +21,13 @@ public class RotObject : MonoBehaviour
     public float rotSpeed;
 
     bool isRotate;
+    float pastAngle;
+    int soundNum;
 
     void Start()
     {
         isRotate = false;
+        soundNum = 1;
     }
 
     void Update()
@@ -43,6 +46,8 @@ public class RotObject : MonoBehaviour
                 if(mouseHit.transform.gameObject.Equals(gameObject))
                 {
                     isRotate = true;
+
+                    pastAngle = getAngle();
                 }
             }
         }
@@ -63,6 +68,15 @@ public class RotObject : MonoBehaviour
             rotateObj.Rotate(((axisOfRotate == AxisOfRotate.X) ? (rot.x) : (0)),
                 ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
                 ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
+
+            if (Mathf.Abs(getAngle() - pastAngle) > 30.0f)
+            {
+                pastAngle = getAngle();
+
+                SoundManager.instance.play("RotateSound_" + soundNum.ToString());
+
+                soundNum = (soundNum > 5) ? (0) : (soundNum + 1);
+            }
 
             // 각도 확인 후 큐브 경로 설정
             for (int i = 0; i < pathCubes.Count; i++)
@@ -96,6 +110,7 @@ public class RotObject : MonoBehaviour
                             targetAngle = i;
                         }
 
+                        // 각도 자동맞춤 시작
                         StartCoroutine(Rotate(currentAngle, targetAngle, true));
 
                         break;
@@ -116,7 +131,7 @@ public class RotObject : MonoBehaviour
 
         int soundNum = 1;
 
-        // 서브 앵글
+        // 회전
         while (timing < 1.0f)
         {
             float angle = Mathf.Lerp(startAngle, nextAngle, timing);

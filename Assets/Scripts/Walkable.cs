@@ -25,11 +25,13 @@ public class Walkable : MonoBehaviour
     public float defaultOffset = 0.5f;
     public float stairOffset = 0.4f;
 
-    // 걷는 좌표 구하는 함수?
+    // 걷는 좌표 구하는 함수
     public Vector3 GetWalkPoint()
     {
+        // 계단인가?
         float stair = (isStair) ? (stairOffset) : (0);
 
+        // 좌표 반환
         return transform.position + transform.up * 0.5f - transform.up * stair;
     }
 

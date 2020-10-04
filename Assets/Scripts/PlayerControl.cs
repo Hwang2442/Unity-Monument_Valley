@@ -54,7 +54,7 @@ public class PlayerControl : MonoBehaviour
             transform.parent = null;
         }
 
-        // 마우스 클릭
+        // 마우스 클릭과 게임매니저 플래그 체크
         if(Input.GetMouseButtonDown(0) && GameManager.instance.Ready)
         {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -63,7 +63,7 @@ public class PlayerControl : MonoBehaviour
             // 레이 발사!!
             if(Physics.Raycast(mouseRay, out mouseHit))
             {
-                // 클릭한 곳이 오브젝트면
+                // 클릭한 곳이 Path인 경우
                 if(mouseHit.transform.GetComponent<Walkable>() != null)
                 {
                     // 클릭음 재생

@@ -1112,9 +1112,15 @@ MonoBehaviour:
     isBGM: 1
   - audio: {fileID: 8300000, guid: 76442c5dc57f3f642821a09a904f6199, type: 3}
     isBGM: 0
-  - audio: {fileID: 8300000, guid: 8c8a2e0cb389de741824830e6943cab4, type: 3}
+  - audio: {fileID: 8300000, guid: 55637a4cd01e580458e8db8896ac01a3, type: 3}
     isBGM: 0
-  - audio: {fileID: 8300000, guid: ee943d7665e41434c8af06fc059a5edb, type: 3}
+  - audio: {fileID: 8300000, guid: 2e709add1f52a7c4daf5730df479b05e, type: 3}
+    isBGM: 0
+  - audio: {fileID: 8300000, guid: d5da538fa30a7cb4e9fad8bbe2828ed0, type: 3}
+    isBGM: 0
+  - audio: {fileID: 8300000, guid: bbdc49fa4e0790b4ead5eca8e6c4161f, type: 3}
+    isBGM: 0
+  - audio: {fileID: 8300000, guid: 49e50a38de649c54bbbb4f8818361825, type: 3}
     isBGM: 0
 --- !u!4 &1969266713
 Transform:
