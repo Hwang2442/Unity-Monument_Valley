@@ -96,7 +96,7 @@ public class RotObject : MonoBehaviour
                             targetAngle = i;
                         }
 
-                        StartCoroutine(Rotate(currentAngle, targetAngle));
+                        StartCoroutine(Rotate(currentAngle, targetAngle, true));
 
                         break;
                     }
@@ -105,14 +105,14 @@ public class RotObject : MonoBehaviour
         }
     }
 
-    IEnumerator Rotate(float startAngle, float finalAngle)
+    IEnumerator Rotate(float startAngle, float finalAngle, bool outBack)
     {
         float timing = 0;
 
         // 튕길 각도
         float firstAngle = (finalAngle > startAngle) ? (finalAngle + 12.5f) : (finalAngle - 12.5f);
         // 다음 각도
-        float nextAngle = firstAngle;
+        float nextAngle = (outBack) ? (firstAngle) : (finalAngle);
 
         // 서브 앵글
         while (timing < 1.0f)
@@ -128,7 +128,7 @@ public class RotObject : MonoBehaviour
                 setAngle(nextAngle);
 
                 // 한 번 튕긴 경우
-                if (nextAngle == firstAngle)
+                if (nextAngle != finalAngle)
                 {
                     startAngle = nextAngle;
                     nextAngle = finalAngle;
@@ -153,6 +153,11 @@ public class RotObject : MonoBehaviour
         }
 
         yield return null;
+    }
+
+    public void autoRotate(float targetAngle, bool outBack)
+    {
+        StartCoroutine(Rotate(getAngle(), targetAngle, outBack));
     }
 
     private void setAngle(float angle)

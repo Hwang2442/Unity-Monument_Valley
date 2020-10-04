@@ -151,18 +151,6 @@ public class PlayerControl : MonoBehaviour
 
         }
 
-        //foreach (WalkPath path in current.GetComponent<Walkable>().possiblePaths)
-        //{
-        //    // 방문했던 큐브중에 없고 && 길이 활성화되어 있을 때
-        //    if(!visitedCubes.Contains(path.target) && path.active)
-        //    {
-        //        // 다음 이동 큐브에 삽입
-        //        nextCubes.Add(path.target);
-                
-        //        path.target.GetComponent<Walkable>().previousBlock = current;
-        //    }
-        //}
-
         // 방문한 큐브 리스트에 현재 큐브를 삽입
         visitedCubes.Add(current);
 
@@ -214,18 +202,17 @@ public class PlayerControl : MonoBehaviour
             {
                 finalPath.Clear();
             }
-        }
+            else
+            {
+                pastCube = currentCube.GetComponent<Walkable>();
+                nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
 
-        if (finalPath.Count > 0)
-        {
-            pastCube = currentCube.GetComponent<Walkable>();
-            nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
+                transform.LookAt(nextCube.GetWalkPoint());
 
-            transform.LookAt(nextCube.GetWalkPoint());
+                timing = 0;
 
-            timing = 0;
-
-            anim.SetBool("Walking", true);
+                anim.SetBool("Walking", true);
+            }
         }
     }
 
@@ -236,7 +223,7 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
-        LayerCheck(pastCube.transform);
+        LayerCheck(nextCube.transform);
 
         transform.position = Vector3.Lerp(pastCube.GetWalkPoint(), nextCube.GetWalkPoint(), timing);
 
@@ -278,15 +265,6 @@ public class PlayerControl : MonoBehaviour
         timing += Time.deltaTime * moveSpeed;
     }
 
-    private void Clear()
-    {
-        foreach (Transform form in finalPath)
-        {
-            form.GetComponent<Walkable>().previousBlock = null;
-        }
-        finalPath.Clear();
-    }
-
     // 현재 플레이어가 밟고 있는 큐브 찾는 함수
     public void RayCastDown()
     {
@@ -296,7 +274,6 @@ public class PlayerControl : MonoBehaviour
         
         // 레이 생성, 방향은 아래
         Ray playerRay = new Ray(rayPos, -transform.up);
-        // 레이캐스트 충돌
         RaycastHit playerHit;
 
         // 레이 발사!!
@@ -310,6 +287,7 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    // 발판을 검사하여 플레이어의 레이어 설정
     void LayerCheck(Transform cube)
     {
         bool isTop = false;
@@ -341,12 +319,14 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    // 자식 오브젝트까지 모두 레이어 설정
     void SetLayerObject(Transform tr, string layerName)
     {
         tr.gameObject.layer = LayerMask.NameToLayer(layerName);
 
-        for(int i = 0; i < tr.childCount; i++)
+        for (int i = 0; i < tr.childCount; i++)
         {
+            // 자식의 자식들까지 설정
             SetLayerObject(tr.GetChild(i), layerName);
         }
     }

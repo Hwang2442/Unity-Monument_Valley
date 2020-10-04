@@ -25,6 +25,8 @@ public class SceneControl : MonoBehaviour
 
     public void ReloadScene()
     {
+        SoundManager.instance.stop(SceneManager.GetActiveScene().name + "BGM");
+
         SoundManager.instance.play(SceneManager.GetActiveScene().name + "BGM");
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -32,6 +34,8 @@ public class SceneControl : MonoBehaviour
 
     public void RoadIntro()
     {
+        SoundManager.instance.stop(SceneManager.GetActiveScene().name + "BGM");
+
         SceneManager.LoadScene("Intro");
     }
 }

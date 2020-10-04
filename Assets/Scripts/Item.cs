@@ -6,46 +6,10 @@ using UnityEngine.Assertions.Must;
 public class Item : MonoBehaviour
 {
     public GameObject target;
-    public ParticleSystem createEffect;
-
-    bool targetActive;
-
-    int maxChild;
-    int curChild;
-
-    void Start()
-    {
-        targetActive = false;
-
-        maxChild = target.transform.childCount;
-        curChild = 0;
-
-        for (int i = 0; i < maxChild; i++)
-        {
-            target.transform.GetChild(i).gameObject.SetActive(false);
-        }
-    }
 
     private void OnTriggerEnter(Collider other)
     {
-        transform.GetChild(0).gameObject.SetActive(false);
-
-        StartCoroutine(targetCreate());
-    }
-
-    IEnumerator targetCreate()
-    {
-        while(curChild < maxChild)
-        {
-            createEffect.transform.position = target.transform.GetChild(curChild).GetComponent<Walkable>().GetWalkPoint();
-            createEffect.Play();
-            
-            target.transform.GetChild(curChild).gameObject.SetActive(true);
-
-            yield return new WaitForSeconds(1.0f);
-
-            curChild++;
-        }
+        target.GetComponent<RotObject>().autoRotate(90.0f, false);
 
         Destroy(gameObject);
     }
