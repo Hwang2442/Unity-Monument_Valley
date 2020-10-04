@@ -1102,6 +1102,8 @@ MonoBehaviour:
   sounds:
   - audio: {fileID: 8300000, guid: e588f5458db56e0419df00f75ee528d1, type: 3}
     isBGM: 0
+  - audio: {fileID: 8300000, guid: 8b3a05de874a539448b4a60c1cf25145, type: 3}
+    isBGM: 0
 --- !u!4 &1969266713
 Transform:
   m_ObjectHideFlags: 0

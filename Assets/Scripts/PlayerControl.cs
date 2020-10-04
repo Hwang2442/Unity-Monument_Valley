@@ -25,6 +25,10 @@ public class PlayerControl : MonoBehaviour
     // 플레이어가 실제 이동할 경로
     public List<Transform> finalPath = new List<Transform>();
 
+    Vector3 pastCube;
+    Vector3 nextCube;
+    float timing = 0;
+
     [Space]
     public float moveSpeed;
 
@@ -33,6 +37,7 @@ public class PlayerControl : MonoBehaviour
         // 플레이어가 밟고 있는 큐브 설정
         RayCastDown();
 
+        // 플레이어 레이어 설정
         LayerCheck();
     }
 
@@ -65,6 +70,9 @@ public class PlayerControl : MonoBehaviour
                 // 클릭한 곳이 오브젝트면
                 if(mouseHit.transform.GetComponent<Walkable>() != null)
                 {
+                    // 클릭음 재생
+                    //SoundManager.instance.play("Navi", 0.5f);
+
                     // 클릭한 큐브 위치 설정
                     clickedCube = mouseHit.transform;
 
@@ -87,16 +95,10 @@ public class PlayerControl : MonoBehaviour
 
                     // 길찾기 시작
                     FindPath();
-
-                    if(finalPath.Count > 0)
-                    {
-                        anim.SetBool("Walking", true);
-                    }
                 }
             }
         }
-        
-        // 길 따라가는 함수
+
         FollowPath();
     }
 
@@ -188,9 +190,11 @@ public class PlayerControl : MonoBehaviour
         {
             bool walk = false;
 
-            foreach (WalkPath walkCube in currentCube.GetComponent<Walkable>().possiblePaths)
+            for (int i = 0; i < currentCube.GetComponent<Walkable>().possiblePaths.Count; i++)
             {
-                if (walkCube.target == finalPath[finalPath.Count - 1] && walkCube.active)
+                WalkPath walkCube = currentCube.GetComponent<Walkable>().possiblePaths[i];
+
+                if (walkCube.target.Equals(finalPath[finalPath.Count - 1]) && walkCube.active)
                 {
                     walk = true;
                     break;
@@ -202,47 +206,61 @@ public class PlayerControl : MonoBehaviour
                 finalPath.Clear();
             }
         }
+
+        if (finalPath.Count > 0)
+        {
+            pastCube = currentCube.GetComponent<Walkable>().GetWalkPoint();
+            nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
+
+            transform.LookAt(nextCube);
+
+            timing = 0;
+
+            anim.SetBool("Walking", true);
+        }
     }
 
-    // 길을 따라 가는 함수
-    private void FollowPath()
+    
+
+    void FollowPath()
     {
-        // 이동하지 않음
         if (finalPath.Count == 0)
         {
             return;
         }
 
-        // 다음으로 이동할 큐브
-        Walkable moveCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
-        
-        // 방향을 바꾸지 않음
-        if(!moveCube.dontRotate)
-        {
-            transform.LookAt(moveCube.GetWalkPoint());
-        }
+        transform.position = Vector3.Lerp(pastCube, nextCube, timing);
 
-        // 이동
-        transform.position = Vector3.Lerp(transform.position, moveCube.GetWalkPoint(), Time.deltaTime * moveSpeed);
-
-        if(Vector3.Distance(transform.position, moveCube.GetWalkPoint()) < 0.01f)
+        if (timing >= 1.0f)
         {
-            transform.position = moveCube.GetWalkPoint();
+            timing = 0;
+
+            pastCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
 
             finalPath.RemoveAt(finalPath.Count - 1);
-            
-            if(finalPath.Count == 0)
+
+            if (finalPath.Count > 0)
+            {
+                nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>().GetWalkPoint();
+
+                transform.LookAt(nextCube);
+
+                return;
+            }
+            else
             {
                 anim.SetBool("Walking", false);
 
-                if (GameManager.instance.clearCube.Equals(currentCube))
-                {
-                    anim.SetBool("Clear", true);
+                //if (GameManager.instance.clearCube = currentCube)
+                //{
+                //    anim.SetBool("Clear", true);
 
-                    GameManager.instance.Clear = true;
-                }
+                //    GameManager.instance.Clear = true;
+                //}
             }
         }
+
+        timing += Time.deltaTime * moveSpeed;
     }
 
     private void Clear()
