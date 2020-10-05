@@ -32,7 +32,7 @@ public class RotObject : MonoBehaviour
 
     void Update()
     {
-        // 왼쪽 버튼을 클릭하면
+        // 왼쪽 버튼을 클릭하면 && 게임매니저 플래그 체크
         if(Input.GetMouseButtonDown(0) && GameManager.instance.Ready)
         {
             // 마우스 포인트 기준 레이캐스트 생성

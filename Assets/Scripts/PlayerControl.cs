@@ -44,9 +44,10 @@ public class PlayerControl : MonoBehaviour
         // 플레이어가 밟고 있는 큐브 설정
         RayCastDown();        
 
-        // 현재 밟고 있는 큐브가 움직이는 땅인 경우
+        // 현재 밟고 있는 큐브가 움직이는 경우
         if (currentCube.GetComponent<Walkable>().movingGround)
         {
+            // 플레이어를 그 자식으로 넣는다
             transform.parent = currentCube.parent;
         }
         else
@@ -75,6 +76,7 @@ public class PlayerControl : MonoBehaviour
                     // 이펙트 위치 조정
                     clickEffect.transform.position = clickedCube.GetComponent<Walkable>().GetWalkPoint();
 
+                    // 이펙트 레이어 조정
                     if(clickedCube.childCount > 0)
                     {
                         SetLayerObject(clickEffect.transform, "Top");
@@ -84,6 +86,7 @@ public class PlayerControl : MonoBehaviour
                         SetLayerObject(clickEffect.transform, "Default");
                     }
 
+                    // 이펙트 재생
                     clickEffect.Play();
 
                     // 경로 초기화
@@ -129,7 +132,7 @@ public class PlayerControl : MonoBehaviour
     {
         Transform current = nextCubes.First();
         nextCubes.Remove(current);
-
+        
         // 클릭한 큐브와 현재 큐브가 같으면
         // 목표 좌표에 도착한 것
         if(current == clickedCube)
@@ -142,20 +145,23 @@ public class PlayerControl : MonoBehaviour
         {
             WalkPath walkPath = current.GetComponent<Walkable>().possiblePaths[i];
 
+            // 이미 지나온 길이 아니고 길이 연결되어 있다면
             if (!visitedCubes.Contains(walkPath.target) && walkPath.active)
             {
+                // 다음 검색 큐브로
                 nextCubes.Add(walkPath.target);
 
+                // 이동할 경로에 추가
                 walkPath.target.GetComponent<Walkable>().previousBlock = current;
             }
 
         }
 
-        // 방문한 큐브 리스트에 현재 큐브를 삽입
+        // 방문한 큐브 리스트에 현재 큐브 추가
         visitedCubes.Add(current);
 
-        // 리스트가 비어있지않다면?
-        if(nextCubes.Any())
+        // 리스트가 하나라도 있다면
+        if (nextCubes.Count > 0)
         {
             ExploreCube(nextCubes, visitedCubes);
         }
@@ -174,7 +180,7 @@ public class PlayerControl : MonoBehaviour
 
             // 클릭한 큐브의 이전큐브가 None일 때
             if (cube.GetComponent<Walkable>().previousBlock != null)
-            {                
+            {
                 cube = cube.GetComponent<Walkable>().previousBlock;
             }
             else
@@ -223,22 +229,25 @@ public class PlayerControl : MonoBehaviour
             return;
         }
 
+        // 타일을 체크하여 플레이어 레이어 설정
         LayerCheck(nextCube.transform);
 
+        // 보간 적용
         transform.position = Vector3.Lerp(pastCube.GetWalkPoint(), nextCube.GetWalkPoint(), timing);
 
+        // 다음 경로 설정
         if (timing >= 1.0f)
         {
             timing = 0;
 
-            pastCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
+            pastCube = finalPath.Last().GetComponent<Walkable>();
 
-            finalPath[finalPath.Count - 1].GetComponent<Walkable>().previousBlock = null;
+            finalPath.Last().GetComponent<Walkable>().previousBlock = null;
             finalPath.RemoveAt(finalPath.Count - 1);
 
             if (finalPath.Count > 0)
             {
-                nextCube = finalPath[finalPath.Count - 1].GetComponent<Walkable>();
+                nextCube = finalPath.Last().GetComponent<Walkable>();
 
                 if (!currentCube.GetComponent<Walkable>().dontRotate)
                 {
