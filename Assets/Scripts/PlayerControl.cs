@@ -23,6 +23,7 @@ public class PlayerControl : MonoBehaviour
     // 플레이어가 실제 이동할 경로
     public List<Transform> finalPath = new List<Transform>();
 
+    // 이동 시 사용할 변수
     Walkable pastCube;
     Walkable nextCube;
     float timing = 0;

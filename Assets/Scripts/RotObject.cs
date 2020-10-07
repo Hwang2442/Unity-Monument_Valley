@@ -48,6 +48,8 @@ public class RotObject : MonoBehaviour
                     isRotate = true;
 
                     pastAngle = getAngle();
+
+                    soundNum = 0;
                 }
             }
         }
@@ -69,7 +71,7 @@ public class RotObject : MonoBehaviour
                 ((axisOfRotate == AxisOfRotate.Y) ? (rot.x) : (0)),
                 ((axisOfRotate == AxisOfRotate.Z) ? (rot.x) : (0)));
 
-            if (Mathf.Abs(getAngle() - pastAngle) > 30.0f)
+            if (Mathf.Abs(getAngle() - pastAngle) >= 30.0f)
             {
                 pastAngle = getAngle();
 

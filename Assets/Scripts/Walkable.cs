@@ -8,14 +8,14 @@ public class Walkable : MonoBehaviour
     public List<WalkPath> possiblePaths = new List<WalkPath>();
 
     [Space]
-    // 이전 블록?
+    // 길 찾기 할 때 지나온 길
     public Transform previousBlock;
 
     [Space]
     [Header("Bool")]
     // 계단인가 아닌가
     public bool isStair = false;
-    // 움직일 수 있는 땅?
+    // 움직이는 오브젝트인가
     public bool movingGround = false;
     // 플레이어가 바라보는 방향 변경 유무
     public bool dontRotate;
@@ -41,20 +41,13 @@ public class Walkable : MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawCube(GetWalkPoint(), new Vector3(0.1f, 0.1f, 0.1f));
 
-        if(possiblePaths == null)
-        {
-            return;
-        }
-
         for(int i = 0; i < possiblePaths.Count; i++)
         {
-            if(possiblePaths[i].target == null)
+            if (possiblePaths[i].active)
             {
-                continue;
+                Gizmos.color = Color.green;
+                Gizmos.DrawLine(GetWalkPoint(), possiblePaths[i].target.GetComponent<Walkable>().GetWalkPoint());
             }
-
-            Gizmos.color = (possiblePaths[i].active) ? (Color.green) : (Color.clear);
-            Gizmos.DrawLine(GetWalkPoint(), possiblePaths[i].target.GetComponent<Walkable>().GetWalkPoint());
         }
     }
 }
