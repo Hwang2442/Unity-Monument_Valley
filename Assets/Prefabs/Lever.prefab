@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8279709697120747845}
   - component: {fileID: 7131669345700816925}
-  - component: {fileID: 1515893055}
   m_Layer: 0
   m_Name: Lever
   m_TagString: Untagged
@@ -48,22 +47,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9430988a75f37db41b467e1243e17dca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathCubes: []
   rotateObj: {fileID: 0}
-  isRotate: 0
---- !u!135 &1515893055
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1391538145424358747}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  pathCubes: []
+  axisOfRotate: 0
+  rotSpeed: 0
 --- !u!1 &1515754483315290027
 GameObject:
   m_ObjectHideFlags: 0

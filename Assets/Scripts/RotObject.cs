@@ -42,14 +42,19 @@ public class RotObject : MonoBehaviour
             // 레이 발사!!
             if(Physics.Raycast(mouseRay, out mouseHit))
             {
-                // 충돌한 오브젝트가 동일하면
-                if(mouseHit.transform.gameObject.Equals(gameObject))
+                // 충돌한 오브젝트가 레버인지 검사
+                for (int i = 0; i < transform.childCount; i++)
                 {
-                    isRotate = true;
+                    if (mouseHit.transform == transform.GetChild(i))
+                    {
+                        isRotate = true;
 
-                    pastAngle = getAngle();
+                        pastAngle = getAngle();
 
-                    soundNum = 0;
+                        soundNum = 0;
+
+                        break;
+                    }
                 }
             }
         }
