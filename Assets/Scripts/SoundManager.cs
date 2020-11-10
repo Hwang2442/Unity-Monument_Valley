@@ -17,20 +17,17 @@ public class SoundManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+
+            DontDestroyOnLoad(gameObject);
+
+            bgm = gameObject.AddComponent<AudioSource>();
+            effect = gameObject.AddComponent<AudioSource>();
+
+            bgm.playOnAwake = false;
+            effect.playOnAwake = false;
+
+            play("IntroBGM");
         }
-    }
-
-    void Start()
-    {
-        DontDestroyOnLoad(gameObject);
-
-        bgm = gameObject.AddComponent<AudioSource>();
-        effect = gameObject.AddComponent<AudioSource>();
-
-        bgm.playOnAwake = false;
-        effect.playOnAwake = false;
-
-        play("IntroBGM");
     }
 
     public void play(string audioName, float volume = 1.0f)
@@ -73,6 +70,8 @@ public class SoundManager : MonoBehaviour
                 {
                     effect.Stop();
                 }
+
+                break;
             }
         }
     }
